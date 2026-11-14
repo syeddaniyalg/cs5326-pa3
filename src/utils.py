@@ -199,10 +199,32 @@ def _verdict_probability(recorded: Any, row: int, generated: list[int], ids: lis
     return None
 
 
-def make_hf_judge_fn(judge_model: Any, judge_tokenizer: Any) -> Callable[[str], dict]:
+JUDGE_MAX_BATCH = 4
+
+
+def _is_out_of_memory(error: BaseException) -> bool:
+    try:
+        import torch
+
+        return isinstance(error, torch.cuda.OutOfMemoryError)
+    except (ImportError, AttributeError):
+        return False
+
+
+def _release_cuda_memory() -> None:
+    try:
+        import torch
+
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except ImportError:
+        pass
+
+
+def make_hf_judge_fn(judge_model: Any, judge_tokenizer: Any, max_batch: int = JUDGE_MAX_BATCH) -> Callable[[str], dict]:
     verdict_ids = _verdict_token_ids(judge_tokenizer)
 
-    def run(prompts: list[str]) -> list[dict]:
+    def run_chunk(prompts: list[str]) -> list[dict]:
         texts = [_chat_text(judge_tokenizer, prompt) for prompt in prompts]
         if len(texts) == 1:
             encoded = judge_tokenizer(texts[0], return_tensors="pt")
@@ -244,6 +266,23 @@ def make_hf_judge_fn(judge_model: Any, judge_tokenizer: Any) -> Callable[[str], 
                     "prompt_tokens": int(mask[row].sum()) if mask is not None else int(prompt_len),
                 }
             )
+        return results
+
+    def run_safe(prompts: list[str]) -> list[dict]:
+        try:
+            return run_chunk(prompts)
+        except Exception as error:
+            if not _is_out_of_memory(error) or len(prompts) == 1:
+                raise
+        _release_cuda_memory()
+        middle = len(prompts) // 2
+        return run_safe(prompts[:middle]) + run_safe(prompts[middle:])
+
+    def run(prompts: list[str]) -> list[dict]:
+        results: list[dict] = []
+        for start in range(0, len(prompts), max_batch):
+            results.extend(run_safe(prompts[start : start + max_batch]))
+            _release_cuda_memory()
         return results
 
     def judge_fn(judge_prompt: str) -> dict:
