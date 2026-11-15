@@ -1,0 +1,9 @@
+{
+  "available": true,
+  "strategy": "product_logprob",
+  "approach": "first-token logits at the verdict position: p = sigmoid(logsumexp(z_VALID) - logsumexp(z_INVALID))",
+  "accuracy": 76.0,
+  "tie_rate": 0.0,
+  "min_accuracy": 70.0,
+  "product_accuracy": 70.0
+}

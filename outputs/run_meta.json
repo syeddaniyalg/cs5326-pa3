@@ -1,0 +1,89 @@
+{
+  "environment": {
+    "python": "3.13.16",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.2",
+    "accelerate": "1.15.0",
+    "bitsandbytes": "0.50.2",
+    "numpy": "2.1.3",
+    "matplotlib": "3.10.0",
+    "tqdm": "4.67.3",
+    "cuda_available": true,
+    "cuda_version": "13.0",
+    "gpus": [
+      {
+        "name": "Tesla T4",
+        "memory_gb": 14.56
+      },
+      {
+        "name": "Tesla T4",
+        "memory_gb": 14.56
+      }
+    ],
+    "generator": {
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "dtype": "float16",
+      "device": "cuda:0"
+    },
+    "judge": {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "quantization": "4-bit NF4 (double quant, fp16 compute)",
+      "device": "cuda:1"
+    },
+    "seed_protocol": "transformers.set_seed(5326 + problem_index) before each problem"
+  },
+  "config": {
+    "data_path": "data/gsm8k_test_50.jsonl",
+    "output_dir": "outputs",
+    "limit": null,
+    "pool_size": 5,
+    "target_calls": 15,
+    "temperature": 0.7,
+    "generator_device": "cuda:0",
+    "judge_device": "cuda:1",
+    "parallel": true
+  },
+  "checkpoint_signature": {
+    "generator": "Qwen/Qwen2.5-1.5B-Instruct",
+    "judge": "Qwen/Qwen2.5-7B-Instruct",
+    "seed": 5326,
+    "pool_size": 5,
+    "target_calls": 15,
+    "temperature": 0.7,
+    "greedy": {
+      "do_sample": false,
+      "temperature": null,
+      "top_p": null,
+      "top_k": null,
+      "max_new_tokens": 512
+    },
+    "sampling": {
+      "do_sample": true,
+      "temperature": 0.7,
+      "top_p": 1.0,
+      "top_k": 0,
+      "repetition_penalty": 1.0,
+      "max_new_tokens": 512
+    },
+    "judge_kwargs": {
+      "do_sample": false,
+      "temperature": null,
+      "top_p": null,
+      "top_k": null,
+      "max_new_tokens": 96
+    },
+    "prompt_digest": "c5776e317490425c"
+  },
+  "wall_clock_seconds_total": 3138.210517499,
+  "sessions": [
+    {
+      "elapsed_seconds": 3138.210517499,
+      "finished_at": "2026-11-15 00:33:39"
+    }
+  ],
+  "stage_seconds": {
+    "generation": 2338.427616164999,
+    "judging": 3103.5849665130017
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "labelled_steps": 40,
+  "judge_invalid_steps_labelled": 20,
+  "meets_minimum_30_steps": true,
+  "meets_minimum_10_judge_invalid": true,
+  "TP": 9,
+  "FP": 11,
+  "TN": 18,
+  "FN": 2,
+  "precision_invalid": 0.45,
+  "recall_invalid": 0.8181818181818182
+}

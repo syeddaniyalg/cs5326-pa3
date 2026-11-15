@@ -6,9 +6,7 @@ __pycache__/
 *.zip
 *.pt
 *.bin
+*.safetensors
 .DS_Store
 _reference/
-outputs/*
-!outputs/.gitkeep
-
-
+outputs/checkpoints/

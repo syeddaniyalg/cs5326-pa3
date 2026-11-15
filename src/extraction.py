@@ -5,10 +5,12 @@ STEP_PATTERN = (
     r"(?:^|\n)\s*(?:[#*`\s]*Step\s*\d+\s*[:.]?[#*`\s]*)(.*?)"
     r"(?=(?:\n\s*[#*`\s]*Step\s*\d+\s*[:.]?[#*`\s]*)|(?:\n\s*[#*`\s]*Final Answer)|$)"
 )
-FINAL_ANSWER_PATTERN = re.compile(r"final\s*answer\s*:?\s*\**\s*([^\n]*)", re.IGNORECASE)
+FINAL_ANSWER_PATTERN = re.compile(r"final\s*answer\s*(?:is\b|=)?\s*:?\s*\**\s*([^\n]*)", re.IGNORECASE)
 NUMBER_PATTERN = re.compile(
     r"^[\s\$\\\(\[\{\*_`~]*(?:boxed\s*\{)?[\s\$]*([-−]?)\s*\$?\s*(\d[\d,]*(?:\.\d+)?|\.\d+)"
 )
+
+SCIENTIFIC_SUFFIX = re.compile(r"[eE][+-]?\d")
 
 
 def parse_steps(completion_text: str) -> list[str]:
@@ -41,8 +43,9 @@ def extract_answer(completion_text: str) -> int | None:
         matches = FINAL_ANSWER_PATTERN.findall(completion_text)
         if not matches:
             return None
-        number = NUMBER_PATTERN.match(matches[-1])
-        if number is None:
+        tail = matches[-1]
+        number = NUMBER_PATTERN.match(tail)
+        if number is None or SCIENTIFIC_SUFFIX.match(tail[number.end():]):
             return None
         return _to_integer(number.group(1), number.group(2))
     except Exception:
