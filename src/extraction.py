@@ -5,7 +5,7 @@ STEP_PATTERN = (
     r"(?:^|\n)\s*(?:[#*`\s]*Step\s*\d+\s*[:.]?[#*`\s]*)(.*?)"
     r"(?=(?:\n\s*[#*`\s]*Step\s*\d+\s*[:.]?[#*`\s]*)|(?:\n\s*[#*`\s]*Final Answer)|$)"
 )
-FINAL_ANSWER_PATTERN = re.compile(r"final\s*answer\s*(?:is\b|=)?\s*:?\s*\**\s*([^\n]*)", re.IGNORECASE)
+FINAL_ANSWER_PATTERN = re.compile(r"final\s*answer\s*:?\s*\**\s*([^\n]*)", re.IGNORECASE)
 NUMBER_PATTERN = re.compile(
     r"^[\s\$\\\(\[\{\*_`~]*(?:boxed\s*\{)?[\s\$]*([-−]?)\s*\$?\s*(\d[\d,]*(?:\.\d+)?|\.\d+)"
 )
